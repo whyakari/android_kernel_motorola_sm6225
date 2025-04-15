@@ -46,6 +46,7 @@ enum {LAST_NORM, LAST_ROOT, LAST_DOT, LAST_DOTDOT, LAST_BIND};
 #define LOOKUP_ROOT		0x2000
 #define LOOKUP_EMPTY		0x4000
 #define LOOKUP_DOWN		0x8000
+#define LOOKUP_MOUNTPOINT	0x0080	/* follow mounts in the end */
 
 extern int path_pts(struct path *path);
 
@@ -81,7 +82,6 @@ extern void done_path_create(struct path *, struct dentry *);
 extern struct dentry *kern_path_locked(const char *, struct path *);
 extern int vfs_path_lookup(struct dentry *, struct vfsmount *,
 			   const char *, unsigned int, struct path *);
-extern int kern_path_mountpoint(int, const char *, struct path *, unsigned int);
 extern int vfs_path_lookup(struct dentry *, struct vfsmount *,
 		const char *, unsigned int, struct path *);
 
