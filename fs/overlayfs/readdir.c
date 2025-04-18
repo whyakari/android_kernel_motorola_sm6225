@@ -823,6 +823,19 @@ out_unlock:
 	return res;
 }
 
+static struct file *ovl_dir_open_realfile(struct file *file,
+					  struct path *realpath)
+{
+	struct file *res;
+	const struct cred *old_cred;
+
+	old_cred = ovl_override_creds(file_inode(file)->i_sb);
+	res = ovl_path_open(realpath, O_RDONLY | (file->f_flags & O_LARGEFILE));
+	ovl_revert_creds(old_cred);
+
+	return res;
+}
+
 static int ovl_dir_fsync(struct file *file, loff_t start, loff_t end,
 			 int datasync)
 {
@@ -845,7 +858,7 @@ static int ovl_dir_fsync(struct file *file, loff_t start, loff_t end,
 			struct path upperpath;
 
 			ovl_path_upper(dentry, &upperpath);
-			realfile = ovl_path_open(&upperpath, O_RDONLY);
+			realfile = ovl_dir_open_realfile(&upperpath, O_RDONLY);
 
 			inode_lock(inode);
 			if (!od->upperfile) {
