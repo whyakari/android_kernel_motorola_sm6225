@@ -1509,6 +1509,7 @@ struct task_struct {
 	ANDROID_KABI_RESERVE(3);
 	ANDROID_KABI_RESERVE(4);
 	ANDROID_KABI_RESERVE(5);
+	ANDROID_KABI_RESERVE(6);
 #else
 	struct mutex			futex_exit_mutex;
 #endif
@@ -1517,35 +1518,16 @@ struct task_struct {
 #ifdef CONFIG_SCHED_TUNE
 	ANDROID_KABI_USE(7, int stune_idx);
 #else
+	ANDROID_KABI_RESERVE(7);
 #endif
 	ANDROID_KABI_RESERVE(8);
-#ifdef CONFIG_ANDROID_SIMPLE_LMK
-	struct task_struct		*simple_lmk_next;
-#endif
 
-	if defined(CONFIG_KSU_SUSFS)
-	ANDROID_KABI_USE(6, u64 susfs_task_state);
-#else
-        ANDROID_KABI_RESERVE(6);
-#endif // #if defined(CONFIG_KSU_SUSFS)
- #else
-#if defined(CONFIG_KSU_SUSFS)
-	u64 susfs_task_state;
-#endif
-        ANDROID_KABI_RESERVE(7);
-#ifdef CONFIG_KSU_SUSFS
-	ANDROID_KABI_USE(8, u64 susfs_last_fake_mnt_id);
-#else
-	ANDROID_KABI_RESERVE(8);
-#endif
 	/*
 	 * New fields for task_struct should be added above here, so that
 	 * they are included in the randomized portion of task_struct.
 	 */
-#if defined(CONFIG_KSU_SUSFS) && !defined(ANDROID_KABI_RESERVE)
+#ifdef CONFIG_KSU_SUSFS
 	u64 susfs_task_state;
-#endif
-#if defined(CONFIG_KSU_SUSFS) && !defined(ANDROID_KABI_RESERVE)
 	u64 susfs_last_fake_mnt_id;
 #endif
 	randomized_struct_fields_end
